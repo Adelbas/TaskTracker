@@ -22,7 +22,7 @@ public class TaskServiceImpl implements TaskService {
                 .title(taskRequest.getTitle())
                 .description(taskRequest.getDescription())
                 .completed(taskRequest.isCompleted())
-                .creationDate(LocalDateTime.now())
+                .creationDate(LocalDateTime.now()) //TODO edit this
                 .completionDate(taskRequest.getCompletionDate())
                 .build();
         return taskRepository.save(task);
