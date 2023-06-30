@@ -1,7 +1,7 @@
 package ru.adel.tasktracker.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class TaskRequest {
     private String description;
 
     @NotNull(message = "Empty completion date!")
-    @FutureOrPresent
+    @Future(message = "Completion date must be a date in the future!")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime completionDate;
 

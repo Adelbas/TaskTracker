@@ -1,7 +1,6 @@
 package ru.adel.tasktracker.service;
 
 import ru.adel.tasktracker.dto.TaskRequest;
-import ru.adel.tasktracker.exception.TaskNotFoundException;
 import ru.adel.tasktracker.model.Task;
 import java.util.List;
 
@@ -9,13 +8,13 @@ public interface TaskService {
 
     Task createTask(TaskRequest taskRequest);
 
-    void deleteTask(Long id) throws TaskNotFoundException;
+    void deleteTask(Long id);
 
     void deleteAllTask();
 
-    Task editTask(TaskRequest taskRequest, Long id) throws TaskNotFoundException;
+    Task editTask(Long id, TaskRequest taskRequest);
 
-    Task editTaskMark(boolean isCompleted, Long id) throws TaskNotFoundException;
+    Task editTaskMark(Long id, boolean isCompleted);
 
-    List<Task> getTasks(String interval, String filter);
+    List<Task> getTasks(String interval, Boolean completed);
 }

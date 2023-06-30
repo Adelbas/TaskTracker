@@ -25,16 +25,15 @@ public class Task {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String description;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     @Column(name = "creation_date")
-    private LocalDateTime creationDate;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
-//    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm", iso = DateTimeFormat.ISO.DATE_TIME)
+    @Builder.Default
+    private LocalDateTime creationDate = LocalDateTime.now();
+
     @Column(name = "completion_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime completionDate;
 
-//    @JsonProperty(value = "isCompleted",access = JsonProperty.Access.READ_ONLY)
     @Column(name = "is_completed")
     private boolean completed;
 

@@ -1,7 +1,9 @@
 package ru.adel.tasktracker.exception;
 
-public class TaskNotFoundException extends Exception {
-    public TaskNotFoundException(Long id){
+import lombok.NonNull;
+
+public class TaskNotFoundException extends RuntimeException {
+    public TaskNotFoundException(@NonNull Long id){
         super("Task not found with id "+id);
     }
 }

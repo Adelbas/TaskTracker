@@ -10,8 +10,4 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByCompletionDateIsBetween(LocalDateTime from, LocalDateTime to);
-
-    List<Task> findByCompletionDateIsBetweenAndCompleted(LocalDateTime from, LocalDateTime to, boolean completed);
-
-    List<Task> findByCompleted(boolean completed);
 }

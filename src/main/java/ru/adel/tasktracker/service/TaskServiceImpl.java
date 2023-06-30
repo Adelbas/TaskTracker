@@ -1,4 +1,4 @@
-package ru.adel.tasktracker.service.impl;
+package ru.adel.tasktracker.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -6,7 +6,6 @@ import ru.adel.tasktracker.dto.TaskRequest;
 import ru.adel.tasktracker.exception.TaskNotFoundException;
 import ru.adel.tasktracker.model.Task;
 import ru.adel.tasktracker.repository.TaskRepository;
-import ru.adel.tasktracker.service.TaskService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,14 +21,13 @@ public class TaskServiceImpl implements TaskService {
                 .title(taskRequest.getTitle())
                 .description(taskRequest.getDescription())
                 .completed(taskRequest.isCompleted())
-                .creationDate(LocalDateTime.now()) //TODO edit this
                 .completionDate(taskRequest.getCompletionDate())
                 .build();
         return taskRepository.save(task);
     }
 
     @Override
-    public void deleteTask(Long id) throws TaskNotFoundException {
+    public void deleteTask(Long id) {
         taskRepository.findById(id).orElseThrow(()->new TaskNotFoundException(id));
         taskRepository.deleteById(id);
     }
@@ -40,7 +38,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task editTask(TaskRequest taskRequest, Long id) throws TaskNotFoundException {
+    public Task editTask(Long id,TaskRequest taskRequest) {
         Task existedTask = taskRepository.findById(id).orElseThrow(()->new TaskNotFoundException(id));
         existedTask.setTitle(taskRequest.getTitle());
         existedTask.setDescription(taskRequest.getDescription());
@@ -49,32 +47,32 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task editTaskMark(boolean isCompleted, Long id) throws TaskNotFoundException {
+    public Task editTaskMark(Long id, boolean isCompleted) {
         Task existedTask = taskRepository.findById(id).orElseThrow(()->new TaskNotFoundException(id));
         existedTask.setCompleted(isCompleted);
         return taskRepository.save(existedTask);
     }
 
     @Override
-    public List<Task> getTasks(String interval, String filter){
+    public List<Task> getTasks(String interval, Boolean completed){
         List<Task> tasks;
         if(interval!=null && !interval.isEmpty()) {
+            LocalDateTime dateFrom = LocalDateTime.now().toLocalDate().atStartOfDay();
             LocalDateTime dateTo;
             switch (interval) {
-                case "today" -> dateTo = LocalDateTime.now().plusDays(1);
-                case "week" -> dateTo = LocalDateTime.now().plusWeeks(1);
-                case "month" -> dateTo = LocalDateTime.now().plusMonths(1);
+                case "today" -> dateTo = dateFrom.toLocalDate().atTime(23,59);
+                case "week" -> dateTo = dateFrom.toLocalDate().plusWeeks(1).minusDays(1).atTime(23,59);
+                case "month" -> dateTo = dateFrom.toLocalDate().plusMonths(1).minusDays(1).atTime(23,59);
                 default -> throw new IllegalArgumentException("Invalid 'interval' parameter!");
             }
-            tasks =  taskRepository.findByCompletionDateIsBetween(LocalDateTime.now().toLocalDate().atStartOfDay(), dateTo);
+            tasks =  taskRepository.findByCompletionDateIsBetween(dateFrom, dateTo);
         } else tasks = taskRepository.findAll();
 
-        if(filter!=null && !filter.isEmpty()){
-            return switch (filter) {
-                case "true" -> tasks.stream().filter(Task::isCompleted).collect(Collectors.toList());
-                case "false" -> tasks.stream().filter(task -> !task.isCompleted()).collect(Collectors.toList());
-                default -> throw new IllegalArgumentException("Invalid 'completed' parameter!");
-            };
+        if (completed!=null){
+            if (completed)
+                return tasks.stream().filter(Task::isCompleted).collect(Collectors.toList());
+            else
+                return tasks.stream().filter(task -> !task.isCompleted()).collect(Collectors.toList());
         }
         return tasks;
     }
