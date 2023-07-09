@@ -5,16 +5,13 @@ import ru.adel.tasktracker.model.Task;
 import java.util.List;
 
 public interface TaskService {
-
+    Task getTaskById(Long id);
     Task createTask(TaskRequest taskRequest);
-
     void deleteTask(Long id);
+    Task updateTask(Long id, TaskRequest taskRequest);
+    Task updateTaskMark(Long id, boolean isCompleted);
+    List<Task> getAllTasks(String interval, Boolean completed);
+    List<Task> getAuthenticatedUserTasks(String interval, Boolean completed);
+    List<Task> getUserTasks(String interval, Boolean completed, Long userId);
 
-    void deleteAllTask();
-
-    Task editTask(Long id, TaskRequest taskRequest);
-
-    Task editTaskMark(Long id, boolean isCompleted);
-
-    List<Task> getTasks(String interval, Boolean completed);
 }

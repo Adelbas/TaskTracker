@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.adel.tasktracker.dto.TaskRequest;
 import ru.adel.tasktracker.model.Task;
 import ru.adel.tasktracker.service.TaskService;
-
 import java.util.List;
 
 @RestController
@@ -16,11 +15,17 @@ import java.util.List;
 public class TaskController {
     private final TaskService taskService;
 
-    @GetMapping()
+    @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
-    public List<Task> getTasks(@RequestParam(required = false, name = "interval") String interval,
-                               @RequestParam(required = false, name = "completed") Boolean completed){
-        return taskService.getTasks(interval, completed);
+    public List<Task> getAuthenticatedUserTasks(@RequestParam(required = false, name = "interval") String interval,
+                                                @RequestParam(required = false, name = "completed") Boolean completed){
+        return taskService.getAuthenticatedUserTasks(interval, completed);
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Task getAuthenticatedUserTaskById(@PathVariable("id") Long id){
+        return taskService.getTaskById(id);
     }
 
     @PostMapping("/create")
@@ -35,24 +40,17 @@ public class TaskController {
         taskService.deleteTask(id);
     }
 
-    @DeleteMapping("/delete-all")
-    @ResponseStatus(HttpStatus.OK)
-    public String removeAllTask() {
-        taskService.deleteAllTask();
-        return "All tasks are deleted";
-    }
-
     @PutMapping("/update/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Task updateTask(@PathVariable("id") Long id,
                            @Valid @RequestBody TaskRequest taskRequest) {
-        return taskService.editTask(id,taskRequest);
+        return taskService.updateTask(id,taskRequest);
     }
 
-    @PutMapping("/updateMark/{id}")
+    @PutMapping("/update-mark/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Task updateTaskMark(@PathVariable("id") Long id,
                                @RequestParam("completed") boolean isCompleted) {
-        return taskService.editTaskMark(id, isCompleted);
+        return taskService.updateTaskMark(id, isCompleted);
     }
 }
