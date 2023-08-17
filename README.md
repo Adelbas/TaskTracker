@@ -27,7 +27,7 @@ This project is simple tasktracker with implementation of Spring Security using 
 - Postman (for testing)
 
 ## Endpoints
-### Anyone
+### Authentication
 | Method   | URL                                      | Description                              |
 | -------- | ---------------------------------------- | ---------------------------------------- |
 | `POST`   | `/api/register`                          | Register new user                        |
